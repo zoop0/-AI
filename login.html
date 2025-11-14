@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 楠风AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #8a2be2;
+            --secondary: #00bfff;
+            --accent: #ff00ff;
+            --dark: #0a0a0a;
+            --darker: #050505;
+            --light: #f8f9fa;
+            --success: #00cc66;
+            --warning: #ffaa00;
+            --danger: #ff4444;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab.active {
+            color: var(--secondary);
+            border-bottom: 3px solid var(--secondary);
+        }
+        
+        .auth-form {
+            background: rgba(20, 20, 30, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.3);
+        }
+        
+        .verification-code {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .verification-code input {
+            flex: 1;
+        }
+        
+        .send-code-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0 15px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .send-code-btn:hover {
+            background: #0099cc;
+        }
+        
+        .auth-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
+        }
+        
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .auth-switch a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .back-home {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .back-home a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s ease;
+        }
+        
+        .back-home a:hover {
+            color: var(--secondary);
+        }
+        
+        .password-requirements {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .auth-form {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <div class="logo-text">楠风AI</div>
+        </div>
+        
+        <div class="auth-tabs">
+            <div class="tab active" id="loginTab">登录</div>
+            <div class="tab" id="registerTab">注册</div>
+        </div>
+        
+        <div class="auth-form">
+            <!-- 登录表单 -->
+            <div id="loginForm">
+                <div class="form-group">
+                    <label for="loginAccount">账号</label>
+                    <input type="text" id="loginAccount" placeholder="QQ/电话/邮箱">
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginPassword">密码</label>
+                    <input type="password" id="loginPassword" placeholder="请输入密码">
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginCode">验证码</label>
+                    <div class="verification-code">
+                        <input type="text" id="loginCode" placeholder="请输入验证码">
+                        <button class="send-code-btn" id="sendLoginCode">发送验证码</button>
+                    </div>
+                </div>
+                
+                <button class="auth-btn" id="loginBtn">登录</button>
+                
+                <div class="auth-switch">
+                    没有账号？ <a href="#" id="switchToRegister">立即注册</a>
+                </div>
+            </div>
+            
+            <!-- 注册表单 -->
+            <div id="registerForm" style="display: none;">
+                <div class="form-group">
+                    <label for="registerAccount">账号</label>
+                    <input type="text" id="registerAccount" placeholder="QQ/电话/邮箱">
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerPassword">密码</label>
+                    <input type="password" id="registerPassword" placeholder="请输入密码">
+                    <div class="password-requirements">密码需包含大小写字母和数字，长度8-20位</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">确认密码</label>
+                    <input type="password" id="confirmPassword" placeholder="请再次输入密码">
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerCode">验证码</label>
+                    <div class="verification-code">
+                        <input type="text" id="registerCode" placeholder="请输入验证码">
+                        <button class="send-code-btn" id="sendRegisterCode">发送验证码</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="invitationCode">邀请码 (可选)</label>
+                    <input type="text" id="invitationCode" placeholder="请输入邀请码">
+                </div>
+                
+                <button class="auth-btn" id="registerBtn">注册</button>
+                
+                <div class="auth-switch">
+                    已有账号？ <a href="#" id="switchToLogin">立即登录</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="back-home">
+            <a href="index.html"><i class="fas fa-arrow-left"></i> 返回首页</a>
+        </div>
+    </div>
+
+    <script>
+        // 标签切换
+        const loginTab = document.getElementById('loginTab');
+        const registerTab = document.getElementById('registerTab');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const switchToRegister = document.getElementById('switchToRegister');
+        const switchToLogin = document.getElementById('switchToLogin');
+        
+        loginTab.addEventListener('click', function() {
+            loginTab.classList.add('active');
+            registerTab.classList.remove('active');
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+        });
+        
+        registerTab.addEventListener('click', function() {
+            registerTab.classList.add('active');
+            loginTab.classList.remove('active');
+            registerForm.style.display = 'block';
+            loginForm.style.display = 'none';
+        });
+        
+        switchToRegister.addEventListener('click', function(e) {
+            e.preventDefault();
+            registerTab.click();
+        });
+        
+        switchToLogin.addEventListener('click', function(e) {
+            e.preventDefault();
+            loginTab.click();
+        });
+        
+        // 密码验证函数
+        function validatePassword(password) {
+            // 密码必须包含大小写字母和数字，长度8-20位
+            const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,20}$/;
+            return regex.test(password);
+        }
+        
+        // 处理登录
+        document.getElementById('loginBtn').addEventListener('click', function() {
+            const account = document.getElementById('loginAccount').value;
+            const password = document.getElementById('loginPassword').value;
+            const code = document.getElementById('loginCode').value;
+            
+            if (!account || !password || !code) {
+                alert('请填写完整信息');
+                return;
+            }
+            
+            // 模拟登录成功
+            alert('登录成功！');
+            window.location.href = 'ai.html';
+        });
+        
+        // 处理注册
+        document.getElementById('registerBtn').addEventListener('click', function() {
+            const account = document.getElementById('registerAccount').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const code = document.getElementById('registerCode').value;
+            const invitationCode = document.getElementById('invitationCode').value;
+            
+            if (!account || !password || !confirmPassword || !code) {
+                alert('请填写完整信息');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('两次输入的密码不一致');
+                return;
+            }
+            
+            if (!validatePassword(password)) {
+                alert('密码必须包含大小写字母和数字，长度8-20位');
+                return;
+            }
+            
+            // 模拟注册成功
+            alert('注册成功！');
+            window.location.href = 'ai.html';
+        });
+        
+        // 发送验证码
+        document.getElementById('sendLoginCode').addEventListener('click', function() {
+            alert('验证码已发送，请注意查收！');
+        });
+        
+        document.getElementById('sendRegisterCode').addEventListener('click', function() {
+            alert('验证码已发送，请注意查收！');
+        });
+    </script>
+</body>
+  </html>
