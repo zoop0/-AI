@@ -316,7 +316,7 @@
                 <div class="user-avatar" id="userAvatar">G</div>
                 <span id="userStatus">游客模式</span>
             </div>
-            <button class="auth-btn" id="authBtn" onclick="window.location.href='login.html'">登录/注册</button>
+            <button class="auth-btn" id="authBtn">登录/注册</button>
         </div>
     </div>
     
@@ -328,35 +328,31 @@
         </div>
         
         <div class="features">
-            <a href="ai.html" style="text-decoration: none; color: inherit;">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-comments"></i>
-                    </div>
-                    <h2 class="feature-title">开始使用</h2>
-                    <p class="feature-description">立即体验楠风AI的强大功能，与智能助手进行自然流畅的对话，获取专业准确的回答</p>
+            <div class="feature-card" id="startUsing">
+                <div class="feature-icon">
+                    <i class="fas fa-comments"></i>
                 </div>
-            </a>
+                <h2 class="feature-title">开始使用</h2>
+                <p class="feature-description">立即体验楠风AI的强大功能，与智能助手进行自然流畅的对话，获取专业准确的回答</p>
+            </div>
             
-            <a href="feedback.html" style="text-decoration: none; color: inherit;">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-bug"></i>
-                    </div>
-                    <h2 class="feature-title">故障反馈</h2>
-                    <p class="feature-description">遇到问题或有改进建议？请点击此处提交反馈，帮助我们不断优化系统体验</p>
+            <div class="feature-card" id="feedback">
+                <div class="feature-icon">
+                    <i class="fas fa-bug"></i>
                 </div>
-            </a>
+                <h2 class="feature-title">故障反馈</h2>
+                <p class="feature-description">遇到问题或有改进建议？请点击此处提交反馈，帮助我们不断优化系统体验</p>
+            </div>
         </div>
         
         <div class="center-nav">
-            <a href="#">支持</a>
-            <a href="#">关于我们</a>
+            <a href="#" id="supportLink">支持</a>
+            <a href="#" id="aboutLink">关于我们</a>
         </div>
         
         <div class="footer">
-            <p>作者: 小涵 | 代号: QY | 楠风AI © 2023 版权所有</p>
-            <p>托管于 GitHub Pages | 域名由 InfinityFree 提供</p>
+            <p>作者: 小涵 | 代号: QY | 楠风AI © 2023-2025 版权所有</p>
+            <p></p> |托管 GitHub Pages||由infinyrfee 提供支持|  </p>
         </div>
     </div>
 
@@ -400,6 +396,39 @@
                 // 跳转到登录页面
                 window.location.href = 'login.html';
             }
+        });
+        
+        // 功能板块点击事件
+        document.getElementById('startUsing').addEventListener('click', function() {
+            if (currentUser.messagesSent >= currentUser.messageLimit) {
+                alert(`您的对话次数已用完，请登录并绑定邀请码获取更多对话次数。`);
+                return;
+            }
+            
+            if (!currentUser.isLoggedIn) {
+                currentUser.messagesSent++;
+                updateUserStatus();
+            }
+            
+            // 跳转到AI对话页面
+            window.location.href = 'ai.html';
+        });
+        
+        document.getElementById('feedback').addEventListener('click', function() {
+            // 跳转到反馈页面
+            window.location.href = 'feedback.html';
+        });
+        
+        // 支持链接
+        document.getElementById('supportLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('如需技术支持，请发送邮件至:敬请期待');
+        });
+        
+        // 关于我们链接
+        document.getElementById('aboutLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('楠风AI\n作者: 小涵 | 代号: QY\n版本: 2.0\nqq客服2898414481:');
         });
         
         // 初始化用户状态
