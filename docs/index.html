@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>楠风AI - 智能对话系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #8a2be2;
+            --secondary: #00bfff;
+            --accent: #ff00ff;
+            --dark: #0a0a0a;
+            --darker: #050505;
+            --light: #f8f9fa;
+            --success: #00cc66;
+            --warning: #ffaa00;
+            --danger: #ff4444;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 顶部导航 */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(138, 43, 226, 0.3);
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .auth-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
+        }
+        
+        /* 主内容 */
+        .main-content {
+            padding: 100px 40px 60px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .header {
+            margin-bottom: 80px;
+            width: 100%;
+        }
+        
+        .main-title {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent), var(--primary));
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradient-flow 5s ease infinite;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+            line-height: 1.1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        @keyframes gradient-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        /* 功能板块 */
+        .features {
+            display: flex;
+            gap: 40px;
+            width: 100%;
+            max-width: 1000px;
+            margin-bottom: 60px;
+        }
+        
+        .feature-card {
+            flex: 1;
+            background: rgba(20, 20, 30, 0.7);
+            border-radius: 20px;
+            padding: 50px 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(138, 43, 226, 0.4);
+        }
+        
+        .feature-card:hover::before {
+            opacity: 0.1;
+        }
+        
+        .feature-icon {
+            font-size: 4.5rem;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradient-flow 5s ease infinite;
+        }
+        
+        .feature-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradient-flow 5s ease infinite;
+        }
+        
+        .feature-description {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+        
+        /* 中间导航链接 */
+        .center-nav {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 60px;
+            font-size: 1.1rem;
+        }
+        
+        .center-nav a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            padding-bottom: 5px;
+        }
+        
+        .center-nav a:hover {
+            color: var(--secondary);
+        }
+        
+        .center-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            transition: width 0.3s ease;
+        }
+        
+        .center-nav a:hover::after {
+            width: 100%;
+        }
+        
+        /* 底部信息 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .main-title {
+                font-size: 3.5rem;
+            }
+            
+            .features {
+                flex-direction: column;
+                max-width: 600px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 100px 20px 40px;
+            }
+            
+            .main-title {
+                font-size: 2.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .feature-title {
+                font-size: 1.8rem;
+            }
+            
+            .feature-card {
+                padding: 30px 20px;
+            }
+            
+            .center-nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="top-nav">
+        <div class="logo">楠风AI</div>
+        
+        <div class="nav-controls">
+            <div class="user-info" id="userInfo">
+                <div class="user-avatar" id="userAvatar">G</div>
+                <span id="userStatus">游客模式</span>
+            </div>
+            <button class="auth-btn" id="authBtn">登录/注册</button>
+        </div>
+    </div>
+    
+    <!-- 主内容 -->
+    <div class="main-content">
+        <div class="header">
+            <h1 class="main-title">欢迎使用楠风AI</h1>
+            <p class="subtitle">基于深度学习和多模态识别的智能对话系统，为您提供安全、准确的AI助手服务</p>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card" id="startUsing">
+                <div class="feature-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h2 class="feature-title">开始使用</h2>
+                <p class="feature-description">立即体验楠风AI的强大功能，与智能助手进行自然流畅的对话，获取专业准确的回答</p>
+            </div>
+            
+            <div class="feature-card" id="feedback">
+                <div class="feature-icon">
+                    <i class="fas fa-bug"></i>
+                </div>
+                <h2 class="feature-title">故障反馈</h2>
+                <p class="feature-description">遇到问题或有改进建议？请点击此处提交反馈，帮助我们不断优化系统体验</p>
+            </div>
+        </div>
+        
+        <div class="center-nav">
+            <a href="#" id="supportLink">支持</a>
+            <a href="#" id="aboutLink">关于我们</a>
+        </div>
+        
+        <div class="footer">
+            <p>作者: 小涵 | 代号: QY | 楠风AI © 2025 版权所有</p>
+            <p>|域名 InfinityFree 提供支持 |托管域 GitHub Pages 支持</p>
+        </div>
+    </div>
+
+    <script>
+        // 用户状态管理
+        let currentUser = {
+            isLoggedIn: false,
+            username: '游客',
+            messageLimit: 5,
+            hasInvitation: false,
+            messagesSent: 0
+        };
+        
+        // 更新用户界面状态
+        function updateUserStatus() {
+            const userAvatar = document.getElementById('userAvatar');
+            const userStatus = document.getElementById('userStatus');
+            const authBtn = document.getElementById('authBtn');
+            
+            if (currentUser.isLoggedIn) {
+                userAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
+                userStatus.textContent = `${currentUser.username} | ${currentUser.hasInvitation ? '无限对话' : `${currentUser.messageLimit - currentUser.messagesSent}条剩余`}`;
+                authBtn.textContent = '退出登录';
+            } else {
+                userAvatar.textContent = 'G';
+                userStatus.textContent = `游客模式 | ${currentUser.messageLimit - currentUser.messagesSent}条剩余`;
+                authBtn.textContent = '登录/注册';
+            }
+        }
+        
+        // 登录/注册按钮事件
+        document.getElementById('authBtn').addEventListener('click', function() {
+            if (currentUser.isLoggedIn) {
+                // 退出登录
+                currentUser.isLoggedIn = false;
+                currentUser.username = '游客';
+                currentUser.messagesSent = 0;
+                updateUserStatus();
+                alert('您已成功退出登录');
+            } else {
+                // 跳转到登录页面
+                window.location.href = 'login.html';
+            }
+        });
+        
+        // 功能板块点击事件
+        document.getElementById('startUsing').addEventListener('click', function() {
+            if (currentUser.messagesSent >= currentUser.messageLimit) {
+                alert(`您的对话次数已用完，请登录或绑定邀请码获取更多对话次数。`);
+                return;
+            }
+            
+            if (!currentUser.isLoggedIn) {
+                currentUser.messagesSent++;
+                updateUserStatus();
+            }
+            
+            // 跳转到AI对话页面
+            window.location.href = 'ai.html';
+        });
+        
+        document.getElementById('feedback').addEventListener('click', function() {
+            // 跳转到反馈页面
+            window.location.href = 'feedback.html';
+        });
+        
+        // 支持链接
+        document.getElementById('supportLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('如需技术支持，请发送邮件至:敬请期待');
+        });
+        
+        // 关于我们链接
+        document.getElementById('aboutLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('楠风AI - 智能对话系统\n作者: 小涵 | 代号: QY\n版本: 2.0\nQQ客服:2898414481');
+        });
+        
+        // 初始化用户状态
+        updateUserStatus();
+    </script>
+</body>
+</html>
